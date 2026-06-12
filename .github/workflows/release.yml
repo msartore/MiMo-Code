@@ -1,0 +1,34 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: ./.github/actions/setup-bun
+
+      - name: Build CLI binary
+        run: bun run script/build.ts --single --skip-embed-web-ui
+        working-directory: packages/opencode
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: mimo-${{ runner.os }}
+          path: packages/opencode/dist/*/bin/mimo*
+          if-no-files-found: error

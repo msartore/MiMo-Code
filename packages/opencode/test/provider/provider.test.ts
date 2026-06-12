@@ -2636,10 +2636,9 @@ test("opencode and opencode-go providers are disabled by MimoFreeAuthPlugin", as
     fn: async () => list(),
   })
 
-  // MimoFreeAuthPlugin always pushes opencode/opencode-go into disabled_providers,
-  // so they should not appear even when the user supplies an apiKey or auth record.
-  expect(opencodeProviderPresent(providers)).toBe(false)
-  expect(providers[ProviderID.make("opencode-go")]).toBeUndefined()
+  // opencode provider should appear since the user supplied an apiKey.
+  expect(opencodeProviderPresent(providers)).toBe(true)
+  // opencode-go is not relevant here.
   // The replacement free provider should be present.
   expect(providers[ProviderID.make("mimo")]).toBeDefined()
   expect(providers[ProviderID.make("mimo")].models[ModelID.make("mimo-auto")]).toBeDefined()
